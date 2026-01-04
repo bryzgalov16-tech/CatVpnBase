@@ -5,40 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Подключить VPN</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f4f4f9; margin: 0; }
-        .container { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 400px; }
-        h1 { font-size: 1.5rem; margin-bottom: 1.5rem; color: #333; }
-        .btn { display: block; width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; text-decoration: none; transition: transform 0.1s, background-color 0.2s; }
-        .btn:active { transform: scale(0.98); }
-        .v2ray { background-color: #5856d6; color: white; }
-        .happ { background-color: #007aff; color: white; }
-        .copy-btn { background-color: #e5e5ea; color: #333; font-size: 0.9rem; }
+        body { font-family: -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; background-color: #f4f4f9; margin: 0; }
+        .container { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 350px; }
+        h1 { font-size: 1.3rem; color: #333; margin-bottom: 20px; }
+        
+        .main-btn { 
+            display: block; width: 100%; padding: 16px; background-color: #007aff; color: white; 
+            border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; 
+            cursor: pointer; text-decoration: none; transition: background 0.3s;
+        }
+        .main-btn:active { background-color: #0056b3; transform: scale(0.98); }
+        
+        .status-text { margin-top: 15px; font-size: 0.85rem; color: #8e8e93; line-height: 1.4; }
+        .copy-link { margin-top: 20px; background: none; border: none; color: #007aff; cursor: pointer; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Добавить подписку</h1>
+    <h1>Настройка VPN</h1>
     
-    <a href="#" id="v2rayLink" class="btn v2ray">Импорт в v2raytun</a>
+    <button onclick="smartImport()" class="main-btn">Импортировать подписку</button>
     
-    <a href="#" id="happLink" class="btn happ">Импорт в Happ</a>
+    <p class="status-text" id="status">
+        Сначала попробуем открыть <b>Happ</b>.<br> 
+        Если он не установлен, предложим <b>v2raytun</b>.
+    </p>
 
-    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-    
-    <button onclick="copyToClipboard()" class="btn copy-btn">Копировать ссылку вручную</button>
+    <button onclick="copyToClipboard()" class="copy-link">Копировать ссылку вручную</button>
 </div>
 
 <script>
-    // Ваша ссылка на Gist
     const rawUrl = "https://gist.githubusercontent.com/bryzgalov16-tech/e65d559af250502452f97db4f159e873/raw/general.txt#Cat_VPN_Main";
-    
-    // Кодируем URL для безопасной передачи в Deeplink
-    const encodedUrl = encodeURIComponent(rawUrl);
 
-    // Формируем ссылки согласно документации
-    document.getElementById('v2rayLink').href = "v2raytun://import/" + rawUrl; // v2ray обычно ест сырые ссылки
-    document.getElementById('happLink').href = "happ://add/" + rawUrl; // Для Happ согласно инструкции
+    function smartImport() {
+        const status = document.getElementById('status');
+        const happLink = "happ://add/" + rawUrl;
+        const v2rayLink = "v2raytun://import/" + rawUrl;
+
+        status.innerHTML = "Запуск Happ...";
+        
+        // 1. Пытаемся открыть Happ
+        window.location.href = happLink;
+
+        // 2. Через 2 секунды проверяем, ушел ли пользователь со страницы
+        // Если приложение открылось, таймер может замедлиться или не сработать (зависит от ОС)
+        // Но в большинстве случаев это сработает как запасной вариант
+        setTimeout(() => {
+            if (!document.hidden) {
+                status.innerHTML = "Happ не найден. Пробуем v2raytun...";
+                window.location.href = v2rayLink;
+            }
+        }, 2000);
+    }
 
     function copyToClipboard() {
         navigator.clipboard.writeText(rawUrl).then(() => {
