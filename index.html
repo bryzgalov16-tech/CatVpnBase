@@ -6,16 +6,16 @@
     <title>Импорт Cat VPN</title>
     <script>
         window.onload = function() {
-            // Ваша НОВАЯ прямая ссылка с тегом имени
+            // Ваша прямая ссылка на конфиг
             const rawGistUrl = "https://gist.githubusercontent.com/bryzgalov16-tech/e65d559af250502452f97db4f159e873/raw/general.txt#Cat_VPN_Main";
             
-            // Формируем Deep Link. encodeURIComponent важен, чтобы символ # передался корректно
-            const deepLink = "v2raytune://install-sub?url=" + encodeURIComponent(rawGistUrl);
+            // ИСПРАВЛЕННЫЙ протокол из вашего примера: v2raytun (без e) и путь /import/
+            const deepLink = "v2raytun://import/" + encodeURIComponent(rawGistUrl);
 
-            // Авто-переход в приложение
+            // Автоматическая попытка открыть приложение
             window.location.href = deepLink;
 
-            // Если приложение не открылось за 2.5 секунды, показываем кнопки
+            // Если через 2.5 сек страница все еще открыта, показываем кнопки
             setTimeout(function() {
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("content").style.display = "block";
@@ -32,7 +32,7 @@
         }
     </script>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-align: center; padding: 40px 20px; line-height: 1.6; color: #333; background-color: #f9f9f9; }
+        body { font-family: -apple-system, sans-serif; text-align: center; padding: 40px 20px; line-height: 1.6; color: #333; background-color: #f9f9f9; }
         .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto; }
         .btn { display: inline-block; background: #007AFF; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; margin: 10px 0; font-weight: bold; cursor: pointer; border: none; font-size: 16px; width: 100%; box-sizing: border-box; }
         code { background: #f4f4f4; padding: 10px; border-radius: 8px; display: block; margin: 15px 0; word-break: break-all; font-size: 13px; color: #555; border: 1px solid #eee; }
@@ -45,17 +45,17 @@
     <div class="card">
         <div id="loader">
             <div class="loader-spinner"></div>
-            <h2>Запускаем v2raytune...</h2>
-            <p>Пытаемся добавить подписку <strong>Cat VPN</strong> автоматически.</p>
+            <h2>Запускаем v2raytun...</h2>
+            <p>Добавляем подписку <strong>Cat VPN</strong>.</p>
         </div>
 
         <div id="content">
             <h2>Почти готово!</h2>
-            <p>Приложение не открылось? Нажмите кнопку ниже:</p>
+            <p>Приложение не открылось автоматически? Нажмите кнопку:</p>
             <a id="manual-link" href="#" class="btn">ОТКРЫТЬ ПРИЛОЖЕНИЕ</a>
             
             <div style="margin: 25px 0; border-top: 1px solid #eee; padding-top: 20px;">
-                <p style="font-size: 14px; color: #666;">Или скопируйте ссылку для ручного добавления:</p>
+                <p style="font-size: 14px; color: #666;">Или скопируйте ссылку вручную:</p>
                 <code id="copy-url"></code>
                 <button class="btn" style="background: #555;" onclick="copyToClipboard()">СКОПИРОВАТЬ ССЫЛКУ</button>
             </div>
