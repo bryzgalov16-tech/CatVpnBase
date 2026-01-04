@@ -3,68 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Подключить VPN</title>
+    <title>Подключение Cat VPN...</title>
     <style>
-        body { font-family: -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; background-color: #f4f4f9; margin: 0; }
-        .container { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 350px; }
-        h1 { font-size: 1.3rem; color: #333; margin-bottom: 20px; }
+        body { font-family: -apple-system, system-ui, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; background-color: #f4f4f9; margin: 0; overflow: hidden; }
         
-        .main-btn { 
-            display: block; width: 100%; padding: 16px; background-color: #007aff; color: white; 
-            border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; 
-            cursor: pointer; text-decoration: none; transition: background 0.3s;
+        .container { 
+            background: white; padding: 2.5rem 2rem; border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center; 
+            width: 90%; max-width: 360px; 
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
         }
-        .main-btn:active { background-color: #0056b3; transform: scale(0.98); }
+
+        .container.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+        h1 { font-size: 1.4rem; color: #1c1c1e; margin-bottom: 20px; }
         
-        .status-text { margin-top: 15px; font-size: 0.85rem; color: #8e8e93; line-height: 1.4; }
-        .copy-link { margin-top: 20px; background: none; border: none; color: #007aff; cursor: pointer; font-size: 0.9rem; }
+        .btn { display: block; width: 100%; padding: 14px; margin: 10px 0; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; box-sizing: border-box; }
+        .btn:active { transform: scale(0.97); }
+
+        .happ { background-color: #007aff; color: white; }
+        .v2ray { background-color: #f2f2f7; color: #5856d6; border: 2px solid #5856d6; }
+        
+        .copy-btn { background: none; border: none; color: #8e8e93; font-size: 0.9rem; margin-top: 15px; cursor: pointer; }
+        
+        .loader {
+            position: absolute; border: 4px solid #f3f3f3; border-top: 4px solid #007aff;
+            border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loader.hide { display: none; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Настройка VPN</h1>
-    
-    <button onclick="smartImport()" class="main-btn">Импортировать подписку</button>
-    
-    <p class="status-text" id="status">
-        Сначала попробуем открыть <b>Happ</b>.<br> 
-        Если он не установлен, предложим <b>v2raytun</b>.
-    </p>
+<div id="loader" class="loader"></div>
 
-    <button onclick="copyToClipboard()" class="copy-link">Копировать ссылку вручную</button>
+<div id="mainContent" class="container">
+    <h1>Добавить подписку</h1>
+    <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">Автоматический переход не удался. Выберите приложение вручную:</p>
+    
+    <a href="#" id="happLink" class="btn happ">Импорт в Happ</a>
+    <a href="#" id="v2rayLink" class="btn v2ray">Импорт в v2raytun</a>
+
+    <button onclick="copyToClipboard()" class="copy-btn">Копировать ссылку вручную</button>
 </div>
 
 <script>
-    const rawUrl = "https://gist.githubusercontent.com/bryzgalov16-tech/e65d559af250502452f97db4f159e873/raw/general.txt#Cat_VPN_Main";
-
-    function smartImport() {
-        const status = document.getElementById('status');
-        const happLink = "happ://add/" + rawUrl;
-        const v2rayLink = "v2raytun://import/" + rawUrl;
-
-        status.innerHTML = "Запуск Happ...";
-        
-        // 1. Пытаемся открыть Happ
-        window.location.href = happLink;
-
-        // 2. Через 2 секунды проверяем, ушел ли пользователь со страницы
-        // Если приложение открылось, таймер может замедлиться или не сработать (зависит от ОС)
-        // Но в большинстве случаев это сработает как запасной вариант
-        setTimeout(() => {
-            if (!document.hidden) {
-                status.innerHTML = "Happ не найден. Пробуем v2raytun...";
-                window.location.href = v2rayLink;
-            }
-        }, 2000);
-    }
-
-    function copyToClipboard() {
-        navigator.clipboard.writeText(rawUrl).then(() => {
-            alert("Ссылка скопирована!");
-        });
-    }
-</script>
-
-</body>
-</html>
+    // Ваша основная ссылка
+    const rawUrl = "
