@@ -52,4 +52,54 @@
 
 <script>
     // Ваша основная ссылка
-    const rawUrl = "
+    const rawUrl = "https://gist.githubusercontent.com/bryzgalov16-tech/e65d559af250502452f97db4f159e873/raw/general.txt#Cat_VPN_Main";
+    
+    const happUri = "happ://add/" + rawUrl;
+    const v2rayUri = "v2raytun://import/" + rawUrl;
+
+    document.getElementById('happLink').href = happUri;
+    document.getElementById('v2rayLink').href = v2rayUri;
+
+    function showUI() {
+        document.getElementById('loader').classList.add('hide');
+        document.getElementById('mainContent').classList.add('show');
+    }
+
+    function tryOpenApp() {
+        // 1. Пробуем Happ (Приоритет)
+        window.location.href = happUri;
+
+        // 2. Через 800мс пробуем v2raytun, если браузер все еще открыт
+        setTimeout(() => {
+            if (!document.hidden) {
+                window.location.href = v2rayUri;
+            }
+        }, 800);
+
+        // 3. Через 2.5 секунды показываем кнопки, если ничего не открылось
+        setTimeout(() => {
+            if (!document.hidden) {
+                showUI();
+            }
+        }, 2500);
+    }
+
+    // Запуск при загрузке
+    window.onload = tryOpenApp;
+
+    // Если пользователь вернулся в браузер из приложения, тоже показываем кнопки
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+            showUI();
+        }
+    });
+
+    function copyToClipboard() {
+        navigator.clipboard.writeText(rawUrl).then(() => {
+            alert("Ссылка скопирована!");
+        });
+    }
+</script>
+
+</body>
+</html>
