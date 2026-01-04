@@ -6,19 +6,18 @@
     <title>Импорт Cat VPN</title>
     <script>
         window.onload = function() {
-            // Ваша прямая ссылка на конфиг из Gist
+            // Ваша прямая ссылка на конфиг
             const rawGistUrl = "https://gist.githubusercontent.com/bryzgalov16-tech/e65d559af250502452f97db4f159e873/raw/general.txt#Cat_VPN_Main";
             
-            // Ссылка для Happ (iOS)
-            const happLink = "happ://add-sub?url=" + encodeURIComponent(rawGistUrl);
-            
-            // Ссылка для v2raytun (Android/iOS)
-            const v2raytunLink = "v2raytun://import/" + encodeURIComponent(rawGistUrl);
+            // ИСПРАВЛЕННЫЙ формат: используем /import/ для обоих приложений
+            const encodedUrl = encodeURIComponent(rawGistUrl);
+            const happLink = "happ://import/" + encodedUrl;
+            const v2raytunLink = "v2raytun://import/" + encodedUrl;
 
-            // ТЕПЕРЬ ПЕРВЫМ пытаемся открыть Happ
+            // Приоритет Happ (iOS)
             window.location.href = happLink;
 
-            // Если через 2.5 секунды приложение не перехватило управление:
+            // Если не открылось автоматически через 2.5 сек, показываем кнопки
             setTimeout(function() {
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("content").style.display = "block";
@@ -30,22 +29,19 @@
 
         function copyToClipboard() {
             const url = "https://gist.githubusercontent.com/bryzgalov16-tech/e65d559af250502452f97db4f159e873/raw/general.txt#Cat_VPN_Main";
-            navigator.clipboard.writeText(url).then(() => {
-                alert("Ссылка скопирована!");
-            });
+            navigator.clipboard.writeText(url).then(() => alert("Ссылка скопирована!"));
         }
     </script>
     <style>
-        body { font-family: -apple-system, system-ui, sans-serif; text-align: center; padding: 20px; background-color: #f5f5f7; color: #1d1d1f; }
-        .card { background: white; padding: 30px; border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); max-width: 400px; margin: 40px auto; }
-        .btn { display: block; color: white; padding: 16px; text-decoration: none; border-radius: 14px; margin: 12px 0; font-weight: 600; font-size: 17px; transition: opacity 0.2s; }
-        .btn:active { opacity: 0.7; }
-        .happ-color { background: #5856D6; } /* Фиолетовый для Happ */
-        .v2ray-color { background: #007AFF; } /* Синий для v2raytun */
+        body { font-family: -apple-system, sans-serif; text-align: center; padding: 20px; background-color: #f5f5f7; }
+        .card { background: white; padding: 30px; border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); max-width: 400px; margin: 40px auto; }
+        .btn { display: block; color: white; padding: 16px; text-decoration: none; border-radius: 12px; margin: 12px 0; font-weight: bold; font-size: 16px; }
+        .happ-color { background: #5856D6; }
+        .v2ray-color { background: #007AFF; }
         .copy-btn { background: #8e8e93; font-size: 14px; }
-        code { background: #f2f2f7; padding: 12px; border-radius: 10px; display: block; margin: 15px 0; word-break: break-all; font-size: 12px; color: #666; border: 1px solid #e5e5ea; }
+        code { background: #f2f2f7; padding: 10px; border-radius: 8px; display: block; margin: 15px 0; word-break: break-all; font-size: 12px; color: #666; }
         #content { display: none; }
-        .spinner { border: 4px solid #e5e5ea; border-top: 4px solid #5856D6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #5856D6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
@@ -53,22 +49,21 @@
     <div class="card">
         <div id="loader">
             <div class="spinner"></div>
-            <h2 style="font-size: 20px;">Запускаем Happ...</h2>
-            <p style="color: #86868b;">Пытаемся добавить подписку <strong>Cat VPN</strong> автоматически.</p>
+            <h2>Запускаем импорт...</h2>
         </div>
 
         <div id="content">
-            <h2 style="margin-bottom: 8px;">Cat VPN</h2>
-            <p style="color: #86868b; margin-bottom: 24px; font-size: 15px;">Выберите ваше приложение для импорта подписки:</p>
+            <h2>Cat VPN</h2>
+            <p style="color: #666; margin-bottom: 20px;">Нажмите кнопку для импорта:</p>
             
-            <a id="happ-btn" href="#" class="btn happ-color">Открыть в Happ (iOS)</a>
-            <a id="v2ray-btn" href="#" class="btn v2ray-color">Открыть в v2raytun</a>
+            <a id="happ-btn" href="#" class="btn happ-color">Импорт в Happ</a>
+            <a id="v2ray-btn" href="#" class="btn v2ray-color">Импорт в v2raytun</a>
             
-            <div style="margin: 30px 0; border-top: 1px solid #f2f2f7; padding-top: 20px;">
-                <p style="font-size: 13px; color: #86868b;">Или добавьте ссылку вручную:</p>
-                <code id="copy-url"></code>
-                <button class="btn copy-btn" onclick="copyToClipboard()">СКОПИРОВАТЬ ССЫЛКУ</button>
-            </div>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
+            
+            <p style="font-size: 13px; color: #999;">Если кнопки не срабатывают:</p>
+            <code id="copy-url"></code>
+            <button class="btn copy-btn" onclick="copyToClipboard()">Скопировать ссылку</button>
         </div>
     </div>
 </body>
